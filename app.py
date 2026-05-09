@@ -8,8 +8,8 @@ from utils.data import add_entry, delete_entry, edit_entry, export_csv, get_all_
 st.set_page_config(
     page_title="HerCycleV2",
     page_icon="🌸",
-    layout="wide",
-    initial_sidebar_state="expanded",
+    layout="centered",
+    initial_sidebar_state="collapsed",
     menu_items={
         'About': 'HerCycleV2 🌸 — Private menstrual cycle tracker'
     }

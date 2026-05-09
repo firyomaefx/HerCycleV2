@@ -230,3 +230,73 @@
         font-weight: 600 !important;
         box-shadow: 0 4px 15px rgba(231,84,128,0.4) !important;
     }
+
+    /* ── Mobile Responsive ────────────────────────────────── */
+    @media only screen and (max-width: 768px) {
+        .stApp {
+            background: linear-gradient(180deg, #FFF0F5 0%, #FFE4EC 50%, #FFF8F0 100%) !important;
+        }
+        h1 { font-size: 1.5rem !important; }
+        h2 { font-size: 1.2rem !important; }
+        h3 { font-size: 1rem !important; }
+        .glass-card {
+            padding: 16px !important;
+            margin-bottom: 12px !important;
+            border-radius: 12px !important;
+        }
+        .phase-badge {
+            padding: 1rem !important;
+            border-radius: 14px !important;
+        }
+        .welcome-card {
+            padding: 2rem 1rem !important;
+        }
+        [data-testid="stMetric"] {
+            padding: 12px !important;
+            border-radius: 12px !important;
+        }
+        [data-testid="stMetricValue"] {
+            font-size: 1.4rem !important;
+        }
+        [data-testid="stMetricLabel"] {
+            font-size: 0.75rem !important;
+        }
+        .stButton > button, [data-testid="stFormSubmitButton"] > button {
+            padding: 0.8rem 1rem !important;
+            font-size: 1rem !important;
+            min-height: 48px !important;
+        }
+        .stDownloadButton > button {
+            min-height: 48px !important;
+        }
+        section[data-testid="stSidebar"] {
+            background: linear-gradient(180deg, #2D1B33 0%, #4A2040 100%) !important;
+        }
+        section[data-testid="stSidebar"] [data-testid="stMarkdownContainer"] p {
+            font-size: 1.2rem !important;
+        }
+        section[data-testid="stSidebar"] .stRadio label {
+            padding: 12px 14px !important;
+            font-size: 0.9rem !important;
+        }
+        [data-testid="stDateInput"] input, [data-testid="stTextInput"] input {
+            font-size: 16px !important;
+            min-height: 44px !important;
+        }
+    }
+
+    @media only screen and (max-width: 480px) {
+        h1 { font-size: 1.3rem !important; }
+        .glass-card {
+            padding: 12px !important;
+        }
+        .phase-badge {
+            padding: 0.75rem !important;
+        }
+        [data-testid="stMetric"] {
+            padding: 10px !important;
+        }
+        [data-testid="stMetricValue"] {
+            font-size: 1.2rem !important;
+        }
+    }
