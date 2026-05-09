@@ -1,0 +1,232 @@
+/* ── Reset & Base ────────────────────────────────────── */
+    
+
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(12px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes pulse {
+        0%, 100% { transform: scale(1); }
+        50% { transform: scale(1.03); }
+    }
+    @keyframes shimmer {
+        0% { background-position: -200% center; }
+        100% { background-position: 200% center; }
+    }
+
+    .stApp {
+        background: linear-gradient(135deg, #FFF0F5 0%, #FFE4EC 30%, #F0E6FF 60%, #FFF8F0 100%) !important;
+        min-height: 100vh;
+        animation: fadeIn 0.6s ease-out;
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif !important;
+    }
+
+    /* ── Custom Scrollbar ────────────────────────────────── */
+    ::-webkit-scrollbar { width: 8px; }
+    ::-webkit-scrollbar-track { background: #FFF0F5; }
+    ::-webkit-scrollbar-thumb { background: linear-gradient(180deg, #E75480, #D43D6A); border-radius: 10px; }
+    ::-webkit-scrollbar-thumb:hover { background: linear-gradient(180deg, #D43D6A, #C02A58); }
+
+    /* ── Typography ──────────────────────────────────────── */
+    h1, h2, h3 {
+        font-family: 'Playfair Display', serif !important;
+        color: #D43D6A !important;
+        letter-spacing: -0.02em;
+    }
+    h1 { font-weight: 700 !important; }
+    h2 { font-weight: 600 !important; }
+    h3 { font-weight: 600 !important; }
+    p, span, div, label {
+        font-family: 'Inter', sans-serif !important;
+    }
+
+    /* ── Glassmorphism Cards ─────────────────────────────── */
+    .glass-card {
+        background: rgba(255, 255, 255, 0.35) !important;
+        backdrop-filter: blur(12px) !important;
+        -webkit-backdrop-filter: blur(12px) !important;
+        border: 1px solid rgba(255, 255, 255, 0.5) !important;
+        border-radius: 16px !important;
+        box-shadow: 0 8px 32px rgba(231, 84, 128, 0.12) !important;
+        padding: 24px !important;
+        margin-bottom: 16px !important;
+        transition: all 0.3s ease !important;
+    }
+    .glass-card:hover {
+        box-shadow: 0 12px 40px rgba(231, 84, 128, 0.2) !important;
+        transform: translateY(-2px) !important;
+    }
+
+    /* ── Sidebar ─────────────────────────────────────────── */
+    section[data-testid="stSidebar"] {
+        background: linear-gradient(180deg, #2D1B33 0%, #4A2040 100%) !important;
+        border-right: none !important;
+    }
+    section[data-testid="stSidebar"] * {
+        color: #F8E0EC !important;
+    }
+    section[data-testid="stSidebar"] [data-testid="stMarkdownContainer"] p {
+        font-family: 'Playfair Display', serif !important;
+        font-size: 1.5rem !important;
+        font-weight: 700 !important;
+        color: #FFB6C1 !important;
+        text-shadow: 0 2px 8px rgba(231,84,128,0.3);
+    }
+    section[data-testid="stSidebar"] .stRadio label {
+        color: #F8E0EC !important;
+        font-weight: 500 !important;
+        padding: 10px 16px !important;
+        border-radius: 12px !important;
+        transition: all 0.3s ease !important;
+        font-size: 0.95rem !important;
+    }
+    section[data-testid="stSidebar"] .stRadio label:hover {
+        background: rgba(231, 84, 128, 0.3) !important;
+        color: #fff !important;
+    }
+    section[data-testid="stSidebar"] .stRadio label[data-baseweb="radio"]:has(input:checked) {
+        background: linear-gradient(135deg, #E75480, #D43D6A) !important;
+        color: white !important;
+        box-shadow: 0 4px 15px rgba(231, 84, 128, 0.5) !important;
+    }
+
+    /* ── Buttons ─────────────────────────────────────────── */
+    .stButton > button, [data-testid="stFormSubmitButton"] > button {
+        background: linear-gradient(135deg, #E75480, #D43D6A) !important;
+        color: white !important;
+        border: none !important;
+        border-radius: 12px !important;
+        padding: 0.75rem 2rem !important;
+        font-size: 1rem !important;
+        font-weight: 600 !important;
+        font-family: 'Inter', sans-serif !important;
+        width: 100% !important;
+        box-shadow: 0 4px 15px rgba(231, 84, 128, 0.4) !important;
+        transition: all 0.3s ease !important;
+        letter-spacing: 0.02em;
+    }
+    .stButton > button:hover, [data-testid="stFormSubmitButton"] > button:hover {
+        background: linear-gradient(135deg, #D43D6A, #C02A58) !important;
+        transform: scale(1.03) !important;
+        box-shadow: 0 6px 20px rgba(231, 84, 128, 0.5) !important;
+    }
+    .stButton > button:active, [data-testid="stFormSubmitButton"] > button:active {
+        background: linear-gradient(135deg, #C02A58, #A8204A) !important;
+        transform: scale(0.98) !important;
+        box-shadow: 0 2px 10px rgba(231, 84, 128, 0.3) !important;
+    }
+
+    /* ── Input Fields ────────────────────────────────────── */
+    [data-testid="stDateInput"] input, [data-testid="stTextInput"] input, .stSelectbox > div > div {
+        background: rgba(255, 255, 255, 0.6) !important;
+        border-radius: 12px !important;
+        border: 2px solid #F8C8D8 !important;
+        font-family: 'Inter', sans-serif !important;
+        transition: all 0.3s ease !important;
+    }
+    [data-testid="stDateInput"] input:focus, [data-testid="stTextInput"] input:focus {
+        border-color: #E75480 !important;
+        box-shadow: 0 0 0 3px rgba(231, 84, 128, 0.2) !important;
+        background: rgba(255, 255, 255, 0.9) !important;
+    }
+
+    /* ── Metrics ─────────────────────────────────────────── */
+    [data-testid="stMetricValue"] {
+        font-family: 'Playfair Display', serif !important;
+        font-size: 2rem !important;
+        font-weight: 700 !important;
+        color: #E75480 !important;
+    }
+    [data-testid="stMetricLabel"] {
+        font-family: 'Inter', sans-serif !important;
+        font-size: 0.85rem !important;
+        font-weight: 500 !important;
+        color: #888 !important;
+        text-transform: uppercase !important;
+        letter-spacing: 0.05em !important;
+    }
+    [data-testid="stMetric"] {
+        background: rgba(255, 255, 255, 0.35) !important;
+        backdrop-filter: blur(12px) !important;
+        border: 1px solid rgba(255, 255, 255, 0.5) !important;
+        border-radius: 16px !important;
+        padding: 20px !important;
+        box-shadow: 0 4px 20px rgba(231, 84, 128, 0.1) !important;
+        border-left: 4px solid #E75480 !important;
+        transition: all 0.3s ease !important;
+    }
+    [data-testid="stMetric"]:hover {
+        box-shadow: 0 8px 30px rgba(231, 84, 128, 0.18) !important;
+        transform: translateY(-2px) !important;
+    }
+
+    /* ── Alerts ──────────────────────────────────────────── */
+    .stSuccess {
+        background: linear-gradient(135deg, rgba(255,240,245,0.9), rgba(255,228,236,0.9)) !important;
+        border-left: 5px solid #E75480 !important;
+        border-radius: 12px !important;
+        backdrop-filter: blur(10px) !important;
+        box-shadow: 0 4px 15px rgba(231,84,128,0.1) !important;
+    }
+    .stError {
+        background: linear-gradient(135deg, rgba(255,240,240,0.9), rgba(255,220,220,0.9)) !important;
+        border-left: 5px solid #D43D6A !important;
+        border-radius: 12px !important;
+        backdrop-filter: blur(10px) !important;
+    }
+    .stWarning {
+        background: linear-gradient(135deg, rgba(255,248,220,0.9), rgba(255,240,200,0.9)) !important;
+        border-left: 5px solid #E7A854 !important;
+        border-radius: 12px !important;
+        backdrop-filter: blur(10px) !important;
+    }
+    .stInfo {
+        background: linear-gradient(135deg, rgba(232,245,255,0.9), rgba(220,240,255,0.9)) !important;
+        border-left: 5px solid #5B9BD5 !important;
+        border-radius: 12px !important;
+        backdrop-filter: blur(10px) !important;
+    }
+
+    /* ── Dataframe ───────────────────────────────────────── */
+    .stDataFrame {
+        border-radius: 12px !important;
+        overflow: hidden !important;
+    }
+
+    /* ── Dividers ────────────────────────────────────────── */
+    hr {
+        border-color: rgba(231, 84, 128, 0.2) !important;
+    }
+
+    /* ── Phase Badge ─────────────────────────────────────── */
+    .phase-badge {
+        background: linear-gradient(135deg, rgba(255,240,245,0.95), rgba(255,228,236,0.95)) !important;
+        backdrop-filter: blur(12px) !important;
+        border-radius: 20px !important;
+        padding: 1.5rem 2rem !important;
+        margin-bottom: 1.5rem !important;
+        border-left: 6px solid #E75480 !important;
+        box-shadow: 0 8px 32px rgba(231,84,128,0.15) !important;
+        animation: fadeIn 0.5s ease-out !important;
+    }
+
+    /* ── Welcome Card ────────────────────────────────────── */
+    .welcome-card {
+        text-align: center !important;
+        padding: 4rem 2rem !important;
+        background: rgba(255,255,255,0.3) !important;
+        backdrop-filter: blur(12px) !important;
+        border-radius: 24px !important;
+        border: 1px solid rgba(255,255,255,0.5) !important;
+        box-shadow: 0 12px 40px rgba(231,84,128,0.12) !important;
+    }
+
+    /* ── Download Button ──────────────────────────────────── */
+    .stDownloadButton > button {
+        background: linear-gradient(135deg, #E75480, #D43D6A) !important;
+        color: white !important;
+        border: none !important;
+        border-radius: 12px !important;
+        font-weight: 600 !important;
+        box-shadow: 0 4px 15px rgba(231,84,128,0.4) !important;
+    }
