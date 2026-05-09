@@ -1,7 +1,7 @@
-data/cycles.csv
 __pycache__/
-.env
-venv/
-.streamlit/
 *.pyc
 *.pyo
+.streamlit/
+data/cycles.csv
+venv/
+.env
