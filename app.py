@@ -305,6 +305,31 @@ if page == "🏠 Dashboard":
                 unsafe_allow_html=True,
             )
 
+            if phase["phase"] and stats.get("avg_cycle"):
+                day = phase["day_in_cycle"]
+                pct = min(day / stats["avg_cycle"], 1.0)
+                radius = 48
+                circumference = 2 * 3.14159265 * radius
+                offset = circumference * (1 - pct)
+                st.markdown(f"""
+                <div style="display:flex; justify-content:center; margin-bottom:1.5rem;">
+                    <svg width="120" height="120" viewBox="0 0 120 120" style="transform:rotate(-90deg);">
+                        <circle cx="60" cy="60" r="{radius}" stroke="#F8C8D8" stroke-width="8" fill="none"/>
+                        <circle cx="60" cy="60" r="{radius}" stroke="#E75480" stroke-width="8" fill="none"
+                            stroke-linecap="round"
+                            stroke-dasharray="{circumference}"
+                            stroke-dashoffset="{offset}">
+                            <animate attributeName="stroke-dashoffset" from="{circumference}" to="{offset}" dur="1s" fill="freeze"/>
+                        </circle>
+                        <text x="60" y="64" text-anchor="middle" dominant-baseline="middle"
+                            font-family="Playfair Display, serif" font-size="28" font-weight="700"
+                            fill="#E75480" transform="rotate(90, 60, 60)">
+                            {day}
+                        </text>
+                    </svg>
+                </div>
+                """, unsafe_allow_html=True)
+
         col1, col2, col3, col4 = st.columns(4)
         avg_cycle = stats.get("avg_cycle")
         std_cycle = stats.get("std_cycle")
