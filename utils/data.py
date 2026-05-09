@@ -167,7 +167,7 @@ def get_cycle_stats(df=None):
     return stats
 
 
-def get_current_phase(df=None, today=None):
+def get_current_phase(df=None, today=None, avg_cycle=None):
     if df is None:
         df = get_all_entries()
     if today is None:
@@ -186,6 +186,10 @@ def get_current_phase(df=None, today=None):
     if df.empty or df["start_date"].isna().all():
         return result
 
+    if avg_cycle is None:
+        stats = get_cycle_stats(df)
+        avg_cycle = stats["avg_cycle"] if stats["avg_cycle"] else 28
+
     last_period = df["start_date"].dropna().max()
     day_in_cycle = (today - last_period).days + 1
 
@@ -194,19 +198,28 @@ def get_current_phase(df=None, today=None):
 
     result["day_in_cycle"] = day_in_cycle
 
-    for phase_name, info in PHASES.items():
-        lo, hi = info["days"]
-        if lo <= day_in_cycle <= hi:
-            result["phase"] = phase_name
-            result["emoji"] = info["emoji"]
-            result["description"] = info["description"]
-            break
+    ovulation_day = avg_cycle - 14
 
-    if result["phase"] is None:
-        if day_in_cycle > 28:
-            result["phase"] = "luteal"
-            result["emoji"] = PHASES["luteal"]["emoji"]
-            result["description"] = "Extended luteal phase - cycle may be longer than average."
+    if 1 <= day_in_cycle <= 5:
+        result["phase"] = "menstrual"
+        result["emoji"] = PHASES["menstrual"]["emoji"]
+        result["description"] = PHASES["menstrual"]["description"]
+    elif 6 <= day_in_cycle <= ovulation_day - 1:
+        result["phase"] = "follicular"
+        result["emoji"] = PHASES["follicular"]["emoji"]
+        result["description"] = PHASES["follicular"]["description"]
+    elif day_in_cycle == ovulation_day:
+        result["phase"] = "ovulation"
+        result["emoji"] = PHASES["ovulation"]["emoji"]
+        result["description"] = PHASES["ovulation"]["description"]
+    elif ovulation_day + 1 <= day_in_cycle <= avg_cycle:
+        result["phase"] = "luteal"
+        result["emoji"] = PHASES["luteal"]["emoji"]
+        result["description"] = PHASES["luteal"]["description"]
+    else:
+        result["phase"] = "luteal"
+        result["emoji"] = PHASES["luteal"]["emoji"]
+        result["description"] = "Extended luteal phase - cycle may be longer than average."
 
     fertile_start = last_period + pd.Timedelta(days=9)
     fertile_end = last_period + pd.Timedelta(days=15)
@@ -255,6 +268,14 @@ def import_csv(uploaded_file):
     incoming = incoming[COLUMNS]
 
     merged = pd.concat([existing, incoming], ignore_index=True)
+
+    for idx in merged.index:
+        s = merged.at[idx, "start_date"]
+        e = merged.at[idx, "end_date"]
+        d = merged.at[idx, "duration"]
+        if pd.notna(s) and pd.notna(e) and str(e).strip() != "" and (pd.isna(d) or str(d).strip() == ""):
+            merged.at[idx, "duration"] = _calc_duration(s, e) if _calc_duration(s, e) else ""
+
     merged.to_csv(CSV_PATH, index=False)
 
     count = len(incoming)

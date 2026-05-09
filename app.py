@@ -292,6 +292,11 @@ elif page == "📋 Edit History":
 
     entries_df = get_all_entries()
 
+    if "delete_id" in st.session_state:
+        delete_entry(st.session_state.delete_id)
+        del st.session_state.delete_id
+        st.rerun()
+
     if entries_df.empty:
         st.info("No entries yet. Log a period to get started!")
     else:
@@ -315,7 +320,9 @@ elif page == "📋 Edit History":
                 with col4:
                     st.write(notes_str)
                 with col5:
-                    st.button("🗑️", key=f"del_{entry_id}", on_click=lambda eid=entry_id: delete_entry(eid))
+                    if st.button("🗑️", key=f"del_{entry_id}"):
+                        st.session_state.delete_id = entry_id
+                        st.rerun()
 
                 st.divider()
 
