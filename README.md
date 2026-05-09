@@ -96,6 +96,17 @@ HerCycleV2/
 
 ## 📝 Version History
 
+### v2.1.0 — Mobile Responsive
+- Changed layout from wide to centered for phone screens
+- Sidebar starts collapsed on mobile
+- Added responsive breakpoints (768px, 480px)
+- 44px touch targets on buttons and inputs
+- 16px input font to prevent iOS auto-zoom
+- Compact glass cards and metrics on small screens
+- CSS extracted to external static/styles.css
+- PWA manifest + theme meta tags
+- SVG phase ring guards against None values
+
 ### v2.0.0 — UI Redesign
 - Complete glassmorphism redesign with gradient backgrounds
 - Dark sidebar with active state highlighting
