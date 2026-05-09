@@ -193,6 +193,13 @@ def get_current_phase(df=None, today=None, avg_cycle=None):
     last_period = df["start_date"].dropna().max()
     day_in_cycle = (today - last_period).days + 1
 
+    # Fertile window can be calculated regardless of day_in_cycle
+    fertile_start = last_period + pd.Timedelta(days=9)
+    fertile_end = last_period + pd.Timedelta(days=15)
+    result["fertile_window"] = (
+        f"{fertile_start.strftime('%b %d')} – {fertile_end.strftime('%b %d')}"
+    )
+
     if day_in_cycle < 1 or day_in_cycle > 60:
         return result
 
@@ -220,12 +227,6 @@ def get_current_phase(df=None, today=None, avg_cycle=None):
         result["phase"] = "luteal"
         result["emoji"] = PHASES["luteal"]["emoji"]
         result["description"] = "Extended luteal phase - cycle may be longer than average."
-
-    fertile_start = last_period + pd.Timedelta(days=9)
-    fertile_end = last_period + pd.Timedelta(days=15)
-    result["fertile_window"] = (
-        f"{fertile_start.strftime('%b %d')} – {fertile_end.strftime('%b %d')}"
-    )
 
     return result
 
