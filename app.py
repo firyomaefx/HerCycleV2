@@ -1,5 +1,6 @@
+import pandas as pd
 import streamlit as st
-from utils.data import add_entry
+from utils.data import add_entry, delete_entry, edit_entry, get_all_entries
 
 st.set_page_config(
     page_title="HerCycleV2",
@@ -145,7 +146,75 @@ elif page == "📝 Log Period":
 
 elif page == "📋 Edit History":
     st.title("📋 Edit History")
-    st.info("🚧 Coming soon! View and edit your past cycle entries here.")
+
+    entries_df = get_all_entries()
+
+    if entries_df.empty:
+        st.info("No entries yet. Log a period to get started!")
+    else:
+        for _, row in entries_df.iterrows():
+            with st.container():
+                col1, col2, col3, col4, col5 = st.columns([2, 2, 1, 3, 1])
+
+                entry_id = int(row["id"])
+                start_str = row["start_date"].strftime("%Y-%m-%d") if pd.notna(row["start_date"]) else "-"
+                end_str = row["end_date"].strftime("%Y-%m-%d") if pd.notna(row["end_date"]) else "Ongoing"
+                duration_val = int(row["duration"]) if pd.notna(row["duration"]) else "-"
+                duration_display = f"{duration_val} days" if duration_val != "-" else "-"
+                notes_str = row["notes"] if pd.notna(row["notes"]) and str(row["notes"]).strip() else "-"
+
+                with col1:
+                    st.write(f"**{start_str}**")
+                with col2:
+                    st.write(end_str)
+                with col3:
+                    st.write(duration_display)
+                with col4:
+                    st.write(notes_str)
+                with col5:
+                    st.button("🗑️", key=f"del_{entry_id}", on_click=lambda eid=entry_id: delete_entry(eid))
+
+                st.divider()
+
+    st.divider()
+    st.subheader("Edit an Entry")
+
+    if not entries_df.empty:
+        entry_ids = [int(row["id"]) for _, row in entries_df.iterrows()]
+        entry_labels = [
+            f"{row['start_date'].strftime('%Y-%m-%d')} (ID: {int(row['id'])})"
+            for _, row in entries_df.iterrows()
+        ]
+
+        selected_label = st.selectbox("Select entry to edit", entry_labels)
+        selected_idx = entry_labels.index(selected_label)
+        selected_id = entry_ids[selected_idx]
+        selected_row = entries_df[entries_df["id"] == selected_id].iloc[0]
+
+        with st.form("edit_history_form"):
+            col1, col2 = st.columns(2)
+            with col1:
+                new_start = st.date_input("Start date", value=selected_row["start_date"])
+            with col2:
+                has_end = pd.notna(selected_row["end_date"])
+                new_end = st.date_input("End date (optional)", value=selected_row["end_date"] if has_end else None)
+
+            new_notes = st.text_input("Notes", value=str(selected_row["notes"]) if pd.notna(selected_row["notes"]) else "")
+
+            submitted = st.form_submit_button("✏️ Update Entry")
+
+            if submitted:
+                if new_end and new_end < new_start:
+                    st.error("End date must be on or after the start date.")
+                else:
+                    edit_entry(
+                        entry_id=selected_id,
+                        start_date=new_start.strftime("%Y-%m-%d"),
+                        end_date=new_end.strftime("%Y-%m-%d") if new_end else None,
+                        notes=new_notes,
+                    )
+                    st.success(f"Entry {selected_id} updated!")
+                    st.rerun()
 
 elif page == "💾 Export/Backup":
     st.title("💾 Export/Backup")
