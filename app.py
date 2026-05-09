@@ -1,6 +1,9 @@
+from datetime import timedelta
+
 import pandas as pd
+import plotly.graph_objects as go
 import streamlit as st
-from utils.data import add_entry, delete_entry, edit_entry, get_all_entries
+from utils.data import add_entry, delete_entry, edit_entry, export_csv, get_all_entries, get_current_phase, get_cycle_stats, import_csv
 
 st.set_page_config(
     page_title="HerCycleV2",
@@ -112,7 +115,147 @@ page = st.sidebar.radio(
 
 if page == "🏠 Dashboard":
     st.title("🏠 Dashboard")
-    st.info("🚧 Coming soon! Track your cycle stats, phase insights, and predictions here.")
+
+    stats = get_cycle_stats()
+    phase = get_current_phase()
+    df = get_all_entries()
+
+    if df.empty or stats["total_entries"] == 0:
+        st.markdown(
+            """
+            <div style='text-align:center; padding:3rem 1rem;'>
+                <h2>🌸 Welcome to HerCycleV2</h2>
+                <p style='font-size:1.1rem; color:#888;'>
+                    No period data yet. Head over to <strong>📝 Log Period</strong> to log your first entry!
+                </p>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
+    else:
+        if phase["phase"]:
+            st.markdown(
+                f"""
+                <div style='
+                    background: linear-gradient(135deg, #FFF0F5, #FFE4EC);
+                    border-radius: 1rem;
+                    padding: 1.25rem 1.5rem;
+                    margin-bottom: 1.5rem;
+                    border-left: 5px solid #E75480;
+                '>
+                    <span style='font-size:2rem;'>{phase["emoji"]}</span>
+                    <span style='font-size:1.4rem; font-weight:700; color:#E75480; margin-left:0.5rem;'>
+                        Day {phase["day_in_cycle"]}
+                    </span>
+                    <span style='font-size:1.4rem; font-weight:700; color:#D43D6A; margin-left:0.5rem;'>
+                        &mdash; {phase["phase"].capitalize()} Phase
+                    </span>
+                    <p style='margin-top:0.5rem; color:#666; font-size:0.95rem;'>
+                        {phase["description"]}
+                    </p>
+                </div>
+                """,
+                unsafe_allow_html=True,
+            )
+
+        col1, col2, col3, col4 = st.columns(4)
+        avg_cycle = stats.get("avg_cycle")
+        std_cycle = stats.get("std_cycle")
+        with col1:
+            st.metric(
+                "Avg Cycle",
+                f"{avg_cycle} days" if avg_cycle is not None else "—",
+            )
+        with col2:
+            st.metric(
+                "Variation",
+                f"±{std_cycle} days" if std_cycle is not None else "—",
+            )
+        with col3:
+            st.metric(
+                "Next Period",
+                stats.get("next_predicted", "—"),
+            )
+        with col4:
+            st.metric(
+                "Total Entries",
+                stats["total_entries"],
+            )
+
+        if std_cycle and std_cycle > 7:
+            st.warning(
+                "Your cycles show significant variation (SD > 7 days). "
+                "This may indicate irregular cycles. Consider consulting a healthcare provider "
+                "if this pattern continues."
+            )
+
+        if df["start_date"].notna().sum() >= 2:
+            valid = df[df["start_date"].notna()].sort_values("start_date")
+            diffs = valid["start_date"].diff().dropna().dt.days
+
+            if len(diffs) > 0:
+                st.subheader("Cycle Length Trend")
+                fig = go.Figure()
+                fig.add_trace(
+                    go.Scatter(
+                        x=valid["start_date"].iloc[1:],
+                        y=diffs,
+                        mode="lines+markers",
+                        line={"color": "#E75480", "width": 2},
+                        marker={"size": 8, "color": "#E75480"},
+                        name="Cycle length",
+                    )
+                )
+                if avg_cycle:
+                    fig.add_hline(
+                        y=avg_cycle,
+                        line_dash="dash",
+                        line_color="#999",
+                        annotation_text=f"Avg: {avg_cycle} days",
+                    )
+                fig.update_layout(
+                    xaxis_title="Period Start Date",
+                    yaxis_title="Cycle Length (days)",
+                    margin={"t": 10, "b": 40, "l": 40, "r": 10},
+                    height=300,
+                    hovermode="x unified",
+                )
+                st.plotly_chart(fig, use_container_width=True)
+
+        if phase.get("fertile_window"):
+            st.info(
+                f"🌷 **Fertile window:** {phase['fertile_window']} &mdash; "
+                "this is typically when ovulation occurs and conception is most likely."
+            )
+
+        pms_start = None
+        if stats.get("next_predicted") and stats.get("avg_cycle"):
+            next_date = pd.Timestamp(stats["next_predicted"])
+            pms_start = (next_date - timedelta(days=7)).strftime("%b %d")
+            pms_end = next_date.strftime("%b %d")
+
+        if pms_start:
+            st.warning(
+                f"🩸 **PMS window:** {pms_start} &ndash; {pms_end} &mdash; "
+                "you may experience mood swings, bloating, or fatigue as your period approaches."
+            )
+
+        st.subheader("Recent Entries")
+        recent = df.head(10).copy()
+        if not recent.empty:
+            display_rows = []
+            for _, row in recent.iterrows():
+                start_str = row["start_date"].strftime("%Y-%m-%d") if pd.notna(row["start_date"]) else "-"
+                end_str = row["end_date"].strftime("%Y-%m-%d") if pd.notna(row["end_date"]) else "—"
+                dur = int(row["duration"]) if pd.notna(row["duration"]) else "-"
+                notes_str = str(row["notes"]) if pd.notna(row["notes"]) and str(row["notes"]).strip() else "-"
+                display_rows.append([start_str, end_str, f"{dur} days" if dur != "-" else "-", notes_str])
+
+            st.dataframe(
+                pd.DataFrame(display_rows, columns=["Start", "End", "Duration", "Notes"]),
+                use_container_width=True,
+                hide_index=True,
+            )
 
 elif page == "📝 Log Period":
     st.title("📝 Log Period")
@@ -218,4 +361,29 @@ elif page == "📋 Edit History":
 
 elif page == "💾 Export/Backup":
     st.title("💾 Export/Backup")
-    st.info("🚧 Coming soon! Export your data to CSV or import from a backup file.")
+
+    all_entries = get_all_entries()
+    st.metric("Total Entries", len(all_entries))
+
+    st.divider()
+    st.subheader("Export Data")
+    csv_path = export_csv()
+    with open(csv_path, "r") as f:
+        csv_data = f.read()
+    st.download_button(
+        label="📥 Download CSV",
+        data=csv_data,
+        file_name="hercyclev2_backup.csv",
+        mime="text/csv",
+    )
+
+    st.divider()
+    st.subheader("Import Data")
+    uploaded = st.file_uploader("Choose a CSV backup file", type=["csv"])
+    if uploaded is not None:
+        try:
+            imported_count = import_csv(uploaded)
+            st.success(f"Successfully imported {imported_count} entries!")
+            st.rerun()
+        except Exception as e:
+            st.error(f"Import failed: {e}")
