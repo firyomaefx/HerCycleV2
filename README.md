@@ -96,6 +96,12 @@ HerCycleV2/
 
 ## 📝 Version History
 
+### v2.1.1 — Mobile UX Polish
+- Bottom tab bar navigation on mobile (replaces sidebar)
+- Hidden Streamlit chrome: sidebar toggle (»), toolbar, main menu, footer
+- Compact tab labels in bottom bar
+- Merged duplicate media queries
+
 ### v2.1.0 — Mobile Responsive
 - Changed layout from wide to centered for phone screens
 - Sidebar starts collapsed on mobile
