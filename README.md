@@ -1,18 +1,32 @@
 # HerCycleV2 🌸
 
-A simple, private, and easy-to-use Streamlit web app for tracking and monitoring menstrual cycles. Designed for personal use on mobile phones.
+A private, modern menstrual cycle tracker with a premium glassmorphism UI.
+
+**Live App:** https://hercyclev2.streamlit.app/
 
 ## ✨ Features
 
 - **Log Periods** — Quick entry with start/end dates and optional notes
-- **Edit Records** — Update or delete past entries
-- **Dashboard** — Cycle stats, phase detection, predictions, and trend charts
-- **Export/Backup** — Download and import CSV data
-- **Privacy First** — No external API calls. Data stays local in `data/cycles.csv` (gitignored)
+- **Edit Records** — Update or delete past entries with glass card UI
+- **Dashboard** — Animated SVG phase ring, cycle stats, predictions, trend chart
+- **Cycle Intelligence** — Dynamic phase detection, fertile window, PMS alerts
+- **Export/Backup** — CSV download and import for data safety
+- **Privacy First** — No external API calls. Data stays local in `data/cycles.csv`
+
+## 🎨 UI Design
+
+- **Glassmorphism** cards with frosted glass effect
+- **Gradient background** (pink → lavender → cream)
+- **Dark sidebar** with active state highlighting
+- **Google Fonts** — Inter (body) + Playfair Display (headings)
+- **Animated buttons** with hover/active effects
+- **Custom scrollbar** and styled alerts
+- **SVG phase ring** showing cycle progress
+- **PWA-ready** manifest for home screen install
 
 ## 🩸 Cycle Intelligence
 
-- **Phase Detection** — Menstrual, follicular, ovulation, luteal (dynamically adapts to your cycle length)
+- **Phase Detection** — Menstrual, follicular, ovulation, luteal (adapts to your cycle length)
 - **Cycle Stats** — Average cycle length, variation, next period prediction
 - **Fertile Window** — Estimated fertile window based on cycle data
 - **PMS Alert** — Warning 7 days before predicted next period
@@ -36,30 +50,27 @@ streamlit run app.py
 
 ### Deploy to Streamlit Cloud
 
-1. Push this repository to GitHub (private repo recommended)
+1. Push this repository to GitHub (public repo for Streamlit Cloud)
 2. Go to [share.streamlit.io](https://share.streamlit.io)
 3. Click **"New app"** and select your repository
 4. Set the main file path to `app.py`
 5. Click **"Deploy"**
-
-## 📱 Live App
-
-**https://hercyclev2.streamlit.app/**
-
-Optimised for mobile use — big buttons, full-width cards, warm pink/cream theme.
 
 ## 📁 Project Structure
 
 ```
 HerCycleV2/
 ├── app.py                  # Main Streamlit application
+├── static/
+│   ├── styles.css          # Modern glassmorphism CSS design system
+│   └── manifest.json       # PWA manifest for home screen install
 ├── utils/
 │   ├── __init__.py
 │   └── data.py             # CRUD + statistics engine
 ├── data/
 │   └── .gitkeep            # CSV storage (gitignored)
 ├── .streamlit/
-│   └── config.toml          # Pink/cream theme config
+│   └── config.toml         # Pink/cream theme config
 ├── .gitignore
 ├── requirements.txt
 └── README.md
@@ -76,15 +87,30 @@ HerCycleV2/
 
 | Component | Technology |
 |-----------|-----------|
-| Frontend | Streamlit |
+| Frontend | Streamlit + Custom CSS (Glassmorphism) |
 | Data | Pandas (CSV) |
-| Charts | Plotly |
-| Theme | Custom pink/cream CSS |
+| Charts | Plotly (custom pink theme) |
+| Theme | Pink/cream gradient + dark sidebar |
+| Fonts | Inter + Playfair Display (Google Fonts) |
 | Deploy | Streamlit Cloud |
 
 ## 📝 Version History
 
-See [Releases](https://github.com/firyomaefx/HerCycleV2/releases) for changelog.
+### v2.0.0 — UI Redesign
+- Complete glassmorphism redesign with gradient backgrounds
+- Dark sidebar with active state highlighting
+- Animated SVG phase ring showing cycle progress
+- Google Fonts (Inter + Playfair Display)
+- Glass cards, animated buttons, styled alerts
+- Custom scrollbar in pink theme
+- PWA manifest for home screen install
+- CSS extracted to external file (static/styles.css)
+
+### v1.0.0 — Initial Release
+- Log periods, edit records, dashboard
+- Dynamic phase detection, cycle stats, predictions
+- CSV export/import, privacy-first design
+- 20 QA tests passed
 
 ## License
 
